@@ -5,6 +5,7 @@ build/
 dist/
 wheels/
 data/
+models/
 outputs/
 *.egg-info
 
