@@ -1,0 +1,9 @@
+providers:
+
+  BAAI:
+    bge-small-en-v1.5:
+      dimensions: 786
+
+    bge-large-en-v1.5:
+      dimension: 4086
+      # normalize_embeddings:

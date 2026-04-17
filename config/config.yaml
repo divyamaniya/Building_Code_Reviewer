@@ -1,0 +1,106 @@
+# This file serves the purpose of single point for modifying any variables that are spread out through the code, this makes easy to manage and faster to experiment different models.
+
+defaults:
+  - models/embedding_config@embedding_registry
+  - models/llm_config@llm_registry
+  - prompts/templates@prompt_registry
+  - _self_      # priority maker tells hydra where current file sits with other files you are importing.
+
+# hydra looks at config.yaml, then put embedding config, llm config... if both files have a temperature settings, the value from llm_config will be used.
+# if _self_ at the bottom most case, hydra loads other config file first and puts main config.yaml file on the top of it, last file is final that can override any parameter define
+
+
+project:
+  name: Ontario_Building_Code Chatbot
+  description: this is main config file
+
+paths:
+  root_dir: ${hydra:runtime.cwd}        # ensures the path is always relative to where you launched the terminal, not where the script sits.
+  raw_data_dir: ${paths.root_dir}/data/raw_data       # is this should be in "" or it works as it is?
+  processed_data_dir: ${paths.root_dir}/data/processed_data
+
+  # test_data_dir (also what if i want to change above path)
+  vector_db_dir: ${paths.root_dir}/vectorDB
+
+  embedding_model_dir: ${paths.root_dir}/models/embeddings/${embedding_provider}/${embedding_model}
+  llm_model_dir: ${paths.root_dir}/models/llms/${llm_provider}/${llm_model}
+  
+  # logs_dir: 
+
+
+api:                        # oc stands for OmegaConf
+  hugging_face_access_token: ${oc.env:HUGGING_FACE_ACCESS_TOKEN}       # interpolation method to pull from the env; same we could do for database pwd
+
+# Vector DB
+chromadb:
+  collection_name: 
+  # distance_metric: 
+  persist_directory: 
+
+chunk_technique:
+  chunk_size: 500
+  chunk_overlap: 50
+  top_k_result: 5
+
+device: cuda
+embedding_provider: BAAI
+embedding_model: bge-large-en-v1.5
+selected_embedding_parameter: ${embedding_registry.providers.${embedding_provider}[${embedding_model}]}
+
+llm_provider: microsoft
+llm_model: Phi-3-mini-128k-instruct
+selected_llm_parameter: ${llm_registry.providers.${llm_provider}.${llm_model}}
+
+llm_parameters:
+  temperature: 0.1
+  max_tokens: 1024
+  top_p: 0.9
+
+system_prompt_id: P-001
+selected_prompt_detail: ${prompt_registry.prompts.${system_prompt_id}}
+
+mlflowConfig:
+  tacking_uri: http://localhost:5000
+  experiment_name: building_code_rag
+  run_name: retrieval_test_v0.1
+  enabled: True
+
+
+
+
+
+# microservices:
+#   - app: model-servering    # item 1 of list microservices
+#     port: 5001, 5002
+#     version: 0.1
+#     deployed: false
+
+#   - app: frontend-UI        # item 2 of list microservices
+#     port: 8080
+#     versions: [1.1, 1.2]
+#     deployed: no
+
+#   - app: monitoring-service
+#     port: 7004
+#     version: 0.1
+#     deployed: false
+
+#   - app: vectorDB-service
+#     port: 8001
+#     version: 0.1
+#     deployed: off
+
+
+# --- # use to create components
+# apiVersion: v1
+# kind: Screat
+
+
+# --- # anothe components
+# kind: Deployment
+# apiVesion: apps/v1
+# metadata:
+#   name:
+#   namespace:
+#   selfLink: /apis/apps/v1/namespaces/default/deployments/
+

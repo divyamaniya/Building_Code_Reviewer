@@ -1,0 +1,20 @@
+providers:
+
+  microsoft:
+    Phi-3-mini-128k-instruct:   # unique model name as id
+      user_start: "<|user|>\n"
+      user_end: "<|end|>\n"
+      assistant_start: "<|assistant|>\n"
+      assistant_end: "<|end|>\n"
+      stop_sequences: ["<|end|>", "<|user|>"]
+
+
+  google:
+    gemma-2b-it:
+      format:
+        
+
+  openai:
+    - id: chatgpt5.5
+      api_version: v3
+      endpoint: "http://openai.api/"

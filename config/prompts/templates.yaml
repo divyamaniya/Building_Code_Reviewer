@@ -1,0 +1,14 @@
+prompts:
+  P-001:    # version id
+    date: 2026-03-01
+    author: Divya
+    description: Initial basic RAG prompt
+    text: >
+      You are a helpful assistant. Use the context below to answer.
+
+  P-002:
+    date: 2026-03-12
+    author: Divya
+    description: Expert mode with hallucination guardrails; added 'I don't know' instruction to stop hallucinations
+    text: >
+      You are an expert. If the answer is not in the context, honestly state that you do not know. Do not make up facts.
