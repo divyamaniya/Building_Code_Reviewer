@@ -7,3 +7,26 @@ providers:
     bge-large-en-v1.5:
       dimension: 4086
       # normalize_embeddings:
+
+    bge-m3:
+      dimension: 1024
+
+  nlpaueb:
+    legal-bert-base-uncased:
+      dimension: 786
+      # Context window: 512 tokens
+      # Type BERT Encoder
+
+    legal-bert-base-uncased_2:
+    dimension: 786
+
+  nomic-ai:
+    nomic-embed-text-v1.5:
+    dimension: 786
+    # context window: 8192
+
+  Alibaba-NLP:      # not trying this because; getting error DynamicCache can't find get_usable_lenght and requires upgrading version of library; which might break something else
+    gte-Qwen2-7B-instruct:
+    dimension: 3584
+    # context window: 32768, LLM based embedder
+    # built on top of Qwen2-7B and fine-tuned for embeddings

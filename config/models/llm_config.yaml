@@ -12,7 +12,34 @@ providers:
   google:
     gemma-2b-it:
       format:
-        
+
+
+  meta-llama:
+    Llama-3.2-3B:     # this does not have chat_template... so will crash while generation
+      format:
+
+    Llama-3.2-3B-Instruct:      # <|start_header_id|>system<|end_header_id|>
+      format:
+
+    Llama-3.1-8B-Instruct:
+      format:
+
+    # try chat model also to check if code is working: meta-llama/Llama-2-7b-chat-hf
+
+  mistralai:
+    Mistral-7B-Instruct-v0.3:     # <s>[INST] {System_Prompt}\n\n{User_Question} [/INST]
+      format:
+
+    # Ministral-8B-Instruct
+
+  Qwen:
+    Qwen2.5-3B-Instruct:      # <|im_start|>system\n...<|im_end|>
+
+    Qwen2.5-7B-Instruct:
+
+
+
+
 
   openai:
     - id: chatgpt5.5

@@ -12,3 +12,4 @@ prompts:
     description: Expert mode with hallucination guardrails; added 'I don't know' instruction to stop hallucinations
     text: >
       You are an expert. If the answer is not in the context, honestly state that you do not know. Do not make up facts.
+
