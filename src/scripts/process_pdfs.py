@@ -5,12 +5,13 @@ from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.pipeline_options import ThreadedPdfPipelineOptions, AcceleratorOptions, AcceleratorDevice
 from docling.datamodel.base_models import InputFormat
+import ipdb
 
 def convert_pdfs_to_md(source_folder, output_folder):
     out_path = Path(output_folder)
     out_path.mkdir(parents=True, exist_ok=True)
 
-    accel_options = AcceleratorOptions(
+    accel_options = AcceleratorOptions(         # to make the parsing faster use all hardware resources GPU and cpu cores
         device=AcceleratorDevice.CUDA,
         num_threads=os.cpu_count()
     )
@@ -33,6 +34,7 @@ def convert_pdfs_to_md(source_folder, output_folder):
     pdf_files = list(Path(source_folder).rglob("*.pdf"))
     print(f"Starting conversion of {len(pdf_files)} files to '{output_folder}'...")
 
+    ipdb.set_trace()  # <--- PLACE ItT HERE
     for result in converter.convert_all(pdf_files):
         if result.document:
             file_name = f"{Path(result.input.file).stem}.md"
