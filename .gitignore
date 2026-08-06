@@ -9,6 +9,8 @@ models/
 outputs/
 __pycache__/
 *.egg-info
+mlartifacts/
+logs/
 
 # Virtual environments
 .venv
