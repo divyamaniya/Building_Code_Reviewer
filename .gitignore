@@ -4,8 +4,6 @@ __pycache__/
 build/
 dist/
 wheels/
-data/
-models/
 outputs/
 __pycache__/
 *.egg-info
