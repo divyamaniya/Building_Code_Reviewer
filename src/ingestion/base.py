@@ -72,9 +72,9 @@ class BaseChunker(ABC):
             data = json.load(f)
 
         # detect and apply virtual offset
-        offset = self._get_page_offset(json_path)
-        if offset > 0:
-            data = self._apply_virtual_offset(data, offset)
+        # offset = self._get_page_offset(json_path)
+        # if offset > 0:
+            # data = self._apply_virtual_offset(data, offset)
 
         # converting json back to docling object
         doc_obj = self.DoclingDocument.model_validate(data)
