@@ -19,6 +19,7 @@ paths:
   raw_data_dir: ${paths.root_dir}/data/raw_data       # is this should be in "" or it works as it is?
   processed_data_dir: ${paths.root_dir}/data/processed_data
   intermediate_data: ${paths.root_dir}/data/intermediate_data
+  splitted_data: ${paths.root_dir}/data/temp_data/splitted
 
   # test_data_dir (also what if i want to change above path)
   vector_db_dir: ${paths.root_dir}/vectorDB
@@ -42,7 +43,7 @@ VectorDB:
   # distance_metric: 
   persist_directory: ${paths.root_dir}/vectorDB
   initial_top_k: 20
-  use_reranker: True   # the toggle
+  use_reranker: False   # the toggle
   reranker_type: non-llm
   final_top_k: 7
   force_reindex: False
@@ -67,7 +68,7 @@ llm_parameters:
   max_tokens: 1024
   top_p: 0.9
 
-system_prompt_id: P-001
+system_prompt_id: P-003
 selected_prompt_detail: ${prompt_registry.prompts.${system_prompt_id}}
 
 mlflowConfig:
@@ -82,46 +83,11 @@ ingestion:
   loader_method: localPdf
 
   chunk_strategy:
-    chunk_technique: hierarchical
+    chunk_technique: recursive
     chunk_size: 500
     chunk_overlap: 50
     top_k_result: 5
 
 
 
-
-# microservices:
-#   - app: model-servering    # item 1 of list microservices
-#     port: 5001, 5002
-#     version: 0.1
-#     deployed: false
-
-#   - app: frontend-UI        # item 2 of list microservices
-#     port: 8080
-#     versions: [1.1, 1.2]
-#     deployed: no
-
-#   - app: monitoring-service
-#     port: 7004
-#     version: 0.1
-#     deployed: false
-
-#   - app: vectorDB-service
-#     port: 8001
-#     version: 0.1
-#     deployed: off
-
-
-# --- # use to create components
-# apiVersion: v1
-# kind: Screat
-
-
-# --- # anothe components
-# kind: Deployment
-# apiVesion: apps/v1
-# metadata:
-#   name:
-#   namespace:
-#   selfLink: /apis/apps/v1/namespaces/default/deployments/
 
