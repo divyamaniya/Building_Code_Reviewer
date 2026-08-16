@@ -13,3 +13,6 @@ logs/
 # Virtual environments
 .venv
 .env
+
+# npm
+node_modules/
