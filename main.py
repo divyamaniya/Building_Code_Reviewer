@@ -59,42 +59,27 @@ def main(cfg) -> None:
    
     # mlflow setup
     # mlflow server --host 127.0.0.1 --port 5000
-    mlflow_setup(config)
+    # mlflow_setup(config)
 
-    with mlflow.start_run(run_name = cfg.VectorDB.collection_name):
-        mlflow.log_params(config.model_dump(mode='json'))
-        # df_results = run_experiment_evaluation(config)
-        df_results = run_experiment_evaluation_async_try_2(config)
+    # with mlflow.start_run(run_name = cfg.VectorDB.collection_name):
+    #     mlflow.log_params(config.model_dump(mode='json'))
+    #     # df_results = run_experiment_evaluation(config)
+    #     df_results = run_experiment_evaluation_async_try_2(config)
 
-        mlflow.log_metrics({
-            "mean_hit_rate": df_results['retrieval_hit'].mean(),
-            "mean_mrr": df_results['mrr'].mean(),
-            "mean_faithfulness": df_results['faithfulness'].mean(),
-            "mean_relevancy": df_results['answer_relevancy'].mean(),
-            "mean_context_precision": df_results.get('context_precision', pd.Series([0])).mean(),
-            "mean_context_recall": df_results['context_recall'].mean()
-        })
+    #     mlflow.log_metrics({
+    #         "mean_hit_rate": df_results['retrieval_hit'].mean(),
+    #         "mean_mrr": df_results['mrr'].mean(),
+    #         "mean_faithfulness": df_results['faithfulness'].mean(),
+    #         "mean_relevancy": df_results['answer_relevancy'].mean(),
+    #         "mean_context_precision": df_results.get('context_precision', pd.Series([0])).mean(),
+    #         "mean_context_recall": df_results['context_recall'].mean()
+    #     })
         
-        mlflow.log_table(data=df_results, artifact_file="evaluation_details.json")
-        df_results.to_csv("eval_results.csv", index=False)
-        mlflow.log_artifact("eval_results.csv")
+    #     mlflow.log_table(data=df_results, artifact_file="evaluation_details.json")
+    #     df_results.to_csv("eval_results.csv", index=False)
+    #     mlflow.log_artifact("eval_results.csv")
 
-        logger.info(f"MLflow Run ID: {mlflow.active_run().info.run_id}")
-        
-        # Testing different chunking techniques of data ingestion pipeline
-        # from src.ingestion.registry import IngestionProcess
-        # ingestion_process_object = IngestionProcess(config)
-        # ingestion_process_object.run_data_ingestion_pipeline(path_dict['raw_data_dir'])
-        
-
-    
-    # from src.scripts.load_vector_try_llms import RAGTester
-    # with mlflow.start_run(run_name=config.mlflow_config.run_name):
-    #     mlflow.log_params(config.model_dump())          # config not dumping into mlflow... need to check
-    #     # creating chat object
-    #     RAG_chat_obj = RAGTester(p['vector_db_dir'])
-    #     engine = RAG_chat_obj.load_session(p['llm_model_dir'], p['embedding_model_dir'], "semantic")
-    #     RAG_chat_obj.start_terminal_chat(engine)
+    #     logger.info(f"MLflow Run ID: {mlflow.active_run().info.run_id}")
 
     # Log metrics
     # latency, retrieval_latency,  faithfulness, ... check databricks    
