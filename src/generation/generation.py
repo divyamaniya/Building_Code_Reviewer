@@ -106,9 +106,10 @@ class GenerationPipeline:
             logger.debug(f"Tokenizer or Template extraction failed: {e}.")
             supports_system = False
 
-        # Get system prompt from config
-        system_instruction = getattr(config.prompt_detail, "system", "You are a helpful assistant.")
-        user_tmpl = getattr(config.prompt_detail, "user_tmpl", "context: {context_str} \nQuestion: {query_str}")
+        # Get system prompt from config using getattr (OmegaConf override access config... in getattr so commenting out)
+        prompt_detail = config.selected_prompt_detail
+        system_instruction = prompt_detail.get("system", "You are a helpful assistant.")
+        user_tmpl = prompt_detail.get("user_tmpl", "context: {context_str} \nQuestion: {query_str}")
 
         if supports_system:
             # Standard: System -> User
@@ -124,6 +125,27 @@ class GenerationPipeline:
             return [
                 ChatMessage(role=MessageRole.USER, content=combined_content)
             ]
+
+    def handle_conversation(self, query_str: str) -> str:
+        """
+        Handles general conversation and off-topic queries using the 
+        native LLM instance while keeping the formatting clean.
+        """
+        from llama_index.core.base.llms.types import MessageRole, ChatMessage
+        
+        chat_messages = [
+            ChatMessage(
+                role=MessageRole.SYSTEM, 
+                content="You are a helpful, polite AI assistant dedicated strictly to helping users with the Ontario Building Code. Answer greetings naturally and briefly guide users to building code inquiries. For off-topic questions, politely remind them of your specialization."
+            ),
+            ChatMessage(
+                role=MessageRole.USER, 
+                content=query_str
+            )
+        ]
+        
+        response = Settings.llm.chat(chat_messages)
+        return str(response.message.content).strip()
 
 
     def answer(self, query_str: str):
