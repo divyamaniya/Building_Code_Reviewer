@@ -8,6 +8,7 @@ class PathChecker(BaseModel):
     # Paths Fields
     raw_data_dir: Path
     processed_data_dir: Path
+    splitted_data: Path
     vector_db_dir: Path
     embedding_model_dir: Path
     llm_model_dir: Path
@@ -33,6 +34,17 @@ class PathChecker(BaseModel):
         # returns all paths as strings
         return {k: str(v) for k, v in self.model_dump().items()}
 
+class HighlightCoords(BaseModel):
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+
+class Citation(BaseModel):
+    text_snippet: str
+    source_file: str
+    page_number: int
+    highlight_coords: HighlightCoords
 
 class APIConfig(BaseModel):
     hugging_face_access_token: SecretStr
@@ -111,7 +123,23 @@ class PromptConfig(BaseModel):
     date: str
     author: str
     description: str
-    text: str
+    text: str | None = None
+    system: str | None = None
+    user_tmpl: str | None = None
+
+    @model_validator(mode="after")
+    def validate_prompt(self) -> "PromptConfig":
+        # Old-style prompt
+        if self.text:
+            return self
+
+        # New system/user prompt
+        if self.system and self.user_tmpl:
+            return self
+
+        raise ValueError(
+            "Prompt must define either 'text' or both 'system' and 'user_tmpl'"
+        )
 
 
 class AppConfig(BaseModel):
