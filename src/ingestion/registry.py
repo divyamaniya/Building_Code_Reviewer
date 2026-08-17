@@ -115,6 +115,11 @@ class IngestionProcess:
     def save_to_jsonl(self, parse_data, source, destination):
         import json
         data = parse_data.document.export_to_dict()
+        source_path = Path(source).resolve()
+        data['_source_pdf'] = {
+            "source_doc": source_path.name,
+            "source_path": str(source_path)
+        }
         dest_path = Path(destination)/ "parsed" / Path(source).with_suffix(".json").name
         dest_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -161,7 +166,15 @@ class IngestionProcess:
             chunker = self.registry.get_chunker(chunk_technique, embed_model_path)
             chunks = chunker.run_on_file(str(json_path))
             chunks_file_path = chunks_dir/f"{chunk_technique}_{json_path.name}"
-            save_func(chunks, chunks_file_path, json_path.name)
+            source_pdf_dir = Path(self.config.paths.splitted_data)     # Citation must point to the corresponding PDF.
+            source_pdf_path = (
+                source_pdf_dir / json_path.with_suffix(".pdf").name
+            )
+            if not source_pdf_path.exists():
+                raise FileNotFoundError(
+                    f"Original PDF not found: {source_pdf_path}"
+                )
+            save_func(chunks, chunks_file_path, source_pdf_path)
             return f"Finished {json_path.name}"
         except Exception as e:
             logger.debug(f"Error occured in single file chunk: {e}")
@@ -222,25 +235,31 @@ class IngestionProcess:
         logger.info("pipeline execution complete")
 
 
-    def save_chunks(self, chunks: list, output_dir: str, source_filename: str):
-        '''
-        Appends chunks from a specific document to a master JSONL file.
-        '''
+    def save_chunks(self, chunks: list, output_dir: str, source_pdf_path: str):
+        """
+        Save chunks as JSONL.
+
+        The JSONL file is only an intermediate artifact.
+        Citation metadata always points back to the original PDF.
+        """
+
+        source_pdf = Path(source_pdf_path).resolve()
 
         try:
-            with open(output_dir, 'w', encoding='utf-8') as f:
+            with open(output_dir, "w", encoding="utf-8") as f:
                 for chunk in chunks:
-                    if "source_doc" not in chunk['metadata']:
-                        logger.info("meta data: %s",chunk['metadata'])
-                        chunk['metadata']['source_doc'] = source_filename
+                    metadata = chunk.setdefault("metadata", {})
+                    # Original PDF identity
+                    metadata["source_doc"] = source_pdf.name
+                    metadata["source_path"] = str(source_pdf)
 
-                    json_line = json.dumps(chunk, ensure_ascii=False)   # indent=4; add if you want readable format
+                    json_line = json.dumps(chunk, ensure_ascii=False)
                     f.write(json_line + "\n")
 
-            logger.info(f"Successfully saved {len(chunks)} chunks to master file.")
+            logger.info("Successfully saved %s chunks for %s", len(chunks), source_pdf.name)
 
         except Exception as e:
-            logger.error(f"Error saving chunks for {source_filename}: {e}")
+            logger.error("Error saving chunks for %s: %s", source_pdf, e)
 
 
     def load_chunks_from_file(self, file_path: Path):

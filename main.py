@@ -53,9 +53,9 @@ def main(cfg) -> None:
     path_dict = config.paths.as_strs()
     logger.debug("Config file has beed read and validated: %s", config)
 
-    # from src.ingestion.registry import IngestionProcess
-    # ingestion_process_object = IngestionProcess(config)
-    # ingestion_process_object.run_data_ingestion_pipeline(path_dict['raw_data_dir'])
+    from src.ingestion.registry import IngestionProcess
+    ingestion_process_object = IngestionProcess(config)
+    ingestion_process_object.run_data_ingestion_pipeline(path_dict['raw_data_dir'])
    
     # mlflow setup
     # mlflow server --host 127.0.0.1 --port 5000

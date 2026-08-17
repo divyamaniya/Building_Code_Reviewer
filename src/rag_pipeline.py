@@ -64,8 +64,8 @@ def run_rag_pipeline(query: str, config):
     index, nodes = init_settings(config)
 
     logger.debug(f"Index: {index}")
-    # retrieval_module = RetrievalPipeline(index, config)
-    retrieval_module = HybridRetrievalPipeline(index, nodes, config)
+    retrieval_module = RetrievalPipeline(index, config)
+    # retrieval_module = HybridRetrievalPipeline(index, nodes, config)
     
 
     generative_module = GenerationPipeline(retrieval_module, config)
